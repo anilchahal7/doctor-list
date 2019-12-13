@@ -10,6 +10,7 @@ import `in`.iceberg.vivydoctors.db.SharedPreferencesCreator
 import `in`.iceberg.vivydoctors.dependencies.ViewModelFactory
 import `in`.iceberg.vivydoctors.interfaces.DoctorsListListener
 import `in`.iceberg.vivydoctors.util.TextUtils
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,6 +18,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,7 +27,7 @@ import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.doctors_list_fragment.view.*
 import javax.inject.Inject
 
-class DoctorsListFragment : DaggerFragment() {
+class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener {
 
     @Inject
     lateinit var getDoctorsListViewModel: GetDoctorsListViewModel
@@ -60,6 +62,7 @@ class DoctorsListFragment : DaggerFragment() {
                 }
                 Toast.makeText(activity, "Reached at bottom of the list", Toast.LENGTH_SHORT).show()
             }
+
             override fun onItemClick(doctor: Doctor) {
                 SharedPreferencesCreator(activity as Context).setDoctorsList(doctor)
             }
@@ -67,20 +70,17 @@ class DoctorsListFragment : DaggerFragment() {
         view.doctorRecyclerView.layoutManager = LinearLayoutManager(activity)
         view.doctorRecyclerView.adapter = doctorItemAdapter
         progressBar = view.progressBar
-        getDoctorsListViewModel = ViewModelProviders.of(this, viewModelFactory).
-            get(GetDoctorsListViewModel::class.java)
+        getDoctorsListViewModel =
+            ViewModelProviders.of(this, viewModelFactory).get(GetDoctorsListViewModel::class.java)
         observeDoctorsListResponse()
         getDoctorsListViewModel.getSearchResponse(lastKey)
+        view.searchView.setOnQueryTextListener(this)
     }
 
     private fun observeDoctorsListResponse() {
         getDoctorsListViewModel.observeGetSearchResponse().observe(this, Observer {
             when (it.status) {
                 ResourceState.SUCCESS -> {
-                    /*it.data.run {
-
-                    }
-                    */
                     doctorsListResponse = it.data!!
                     doctorsListResponse.lastKey.let {
                         lastKey = doctorsListResponse.lastKey
@@ -100,5 +100,27 @@ class DoctorsListFragment : DaggerFragment() {
                 }
             }
         })
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        search(newText)
+        return true
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        search(query)
+        return true
+    }
+
+    @SuppressLint("DefaultLocale")
+    private fun search(text: String?) {
+        val filterDoctorList: MutableList<Doctor> = mutableListOf()
+        val iterator = doctorDataList.listIterator()
+        for (item in iterator) {
+            if (item.name.toLowerCase().contains(text!!.toLowerCase())) {
+                filterDoctorList.add(item)
+            }
+        }
+        doctorItemAdapter.filerList(filterDoctorList)
     }
 }

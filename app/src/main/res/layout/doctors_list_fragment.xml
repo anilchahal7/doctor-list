@@ -6,12 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
 
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/doctorRecyclerView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_below="@id/searchView" />
 
     <ProgressBar
         android:id="@+id/progressBar"
