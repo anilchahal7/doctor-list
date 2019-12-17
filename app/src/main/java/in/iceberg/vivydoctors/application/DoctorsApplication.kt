@@ -3,6 +3,7 @@ package `in`.iceberg.vivydoctors.application
 import android.app.Activity
 import android.app.Application
 import androidx.fragment.app.Fragment
+import com.droidnet.DroidNet
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -27,6 +28,12 @@ class DoctorsApplication: Application(), HasActivityInjector, HasSupportFragment
 
     override fun onCreate() {
         super.onCreate()
+        DroidNet.init(this)
         DaggerApplicationComponent.builder().application(this).build().inject(this)
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        DroidNet.getInstance().removeAllInternetConnectivityChangeListeners()
     }
 }

@@ -24,12 +24,15 @@ import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.droidnet.DroidListener
+import com.droidnet.DroidNet
+import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.doctors_list_fragment.view.*
 import javax.inject.Inject
 
-class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener {
+class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener, DroidListener {
 
     @Inject
     lateinit var getDoctorsListViewModel: GetDoctorsListViewModel
@@ -48,9 +51,14 @@ class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener {
     private var startDoctorDetailActivity: Int = 1000
     private var showMessageOnlyOnce: Boolean = true
 
+    private lateinit var droidNet: DroidNet
+    private var isNetConnected: Boolean = true
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.doctors_list_fragment, container, false)
         initUI(view)
+        droidNet = DroidNet.getInstance()
+        droidNet.addInternetConnectivityListener(this)
         return view
     }
 
@@ -92,6 +100,9 @@ class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener {
         observeDoctorsListResponse()
         getDoctorsListViewModel.getSearchResponse(lastKey)
         view.searchView.setOnQueryTextListener(this)
+        if (!isNetConnected) {
+            Toast.makeText(activity, "Internet is Not Connected", Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun observeDoctorsListResponse() {
@@ -110,6 +121,7 @@ class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener {
                     Toast.makeText(activity, "Doctors List Fetched", Toast.LENGTH_LONG).show()
                 }
                 ResourceState.ERROR -> {
+                    progressBar.visibility = View.GONE
                     Toast.makeText(activity, "Error In Fetching Doctors List", Toast.LENGTH_LONG).show()
                 }
                 ResourceState.LOADING -> {
@@ -118,6 +130,21 @@ class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener {
                 }
             }
         })
+    }
+
+    override fun onStart() {
+        super.onStart()
+        userVisibleHint = true
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        if (isVisibleToUser && !isNetConnected) {
+            Toast.makeText(activity, "Internet is Not Connected", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    override fun onInternetConnectivityChanged(isConnected: Boolean) {
+        isNetConnected = isConnected
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
