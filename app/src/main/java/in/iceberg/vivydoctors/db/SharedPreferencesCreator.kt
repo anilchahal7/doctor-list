@@ -30,19 +30,34 @@ class SharedPreferencesCreator constructor(context: Context) {
             val position = isItemAddedAlready(doctor.id, savedDoctorList)
             if (position == -1) {
                 savedDoctorList.add(0, doctor)
-                val savedDoctorString = gSonBuilder.toJson(savedDoctorList)
-                sharedPreferences.edit().putString(RECENTLY_VISITED_DOCTOR_KEY, savedDoctorString).apply()
+                saveDoctorItemList(savedDoctorList)
             } else {
                 savedDoctorList.removeAt(position)
                 savedDoctorList.add(0, doctor)
-                val savedDoctorString = gSonBuilder.toJson(savedDoctorList)
-                sharedPreferences.edit().putString(RECENTLY_VISITED_DOCTOR_KEY, savedDoctorString).apply()
+                saveDoctorItemList(savedDoctorList)
             }
         } else {
             val recentlyViewedDoctorList: MutableList<Doctor> = mutableListOf()
             recentlyViewedDoctorList.add(doctor)
-            val data = gSonBuilder.toJson(recentlyViewedDoctorList)
-            sharedPreferences.edit().putString(RECENTLY_VISITED_DOCTOR_KEY, data).apply()
+            saveDoctorItemList(recentlyViewedDoctorList)
+        }
+    }
+
+    private fun saveDoctorItemList(savedDoctorList: MutableList<Doctor>) {
+        if (savedDoctorList.count() < 3) {
+            val savedDoctorString = gSonBuilder.toJson(savedDoctorList)
+            sharedPreferences.edit().putString(RECENTLY_VISITED_DOCTOR_KEY, savedDoctorString).apply()
+        } else {
+            val filteredList: MutableList<Doctor> = mutableListOf()
+            for (i in savedDoctorList.indices) {
+                if (i < 3) {
+                    filteredList.add(savedDoctorList[i])
+                } else {
+                    break
+                }
+            }
+            val savedDoctorString = gSonBuilder.toJson(filteredList)
+            sharedPreferences.edit().putString(RECENTLY_VISITED_DOCTOR_KEY, savedDoctorString).apply()
         }
     }
 

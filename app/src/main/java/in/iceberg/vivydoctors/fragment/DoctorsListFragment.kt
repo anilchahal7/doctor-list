@@ -46,6 +46,7 @@ class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener {
     private var doctorDataList: MutableList<Doctor> = mutableListOf()
 
     private var startDoctorDetailActivity: Int = 1000
+    private var showMessageOnlyOnce: Boolean = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.doctors_list_fragment, container, false)
@@ -71,8 +72,10 @@ class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener {
             override fun onBottomReached() {
                 if (TextUtils.isNotNullOrEmpty(lastKey)) {
                     getDoctorsListViewModel.getSearchResponse(lastKey)
+                } else if (showMessageOnlyOnce) {
+                    Toast.makeText(activity, "Nothing to Fetch ...", Toast.LENGTH_SHORT).show()
+                    showMessageOnlyOnce = false
                 }
-                Toast.makeText(activity, "Reached at bottom of the list", Toast.LENGTH_SHORT).show()
             }
             override fun onItemClick(doctor: Doctor, position: Int) {
                 SharedPreferencesCreator(activity as Context).setDoctorsList(doctor)
@@ -92,7 +95,7 @@ class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener {
     }
 
     private fun observeDoctorsListResponse() {
-        getDoctorsListViewModel.observeGetSearchResponse().observe(this, Observer {
+        getDoctorsListViewModel.observeGetSearchResponse().observe(this, Observer { it ->
             when (it.status) {
                 ResourceState.SUCCESS -> {
                     doctorsListResponse = it.data!!
@@ -100,7 +103,7 @@ class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener {
                         lastKey = doctorsListResponse.lastKey
                     }
                     doctorDataList.addAll(doctorsListResponse.doctors.toMutableList())
-                    doctorDataList = doctorDataList.sortedWith(compareBy({ it.rating })).toMutableList()
+                    doctorDataList = doctorDataList.sortedWith(compareBy { it.rating }).toMutableList()
                     doctorItemAdapter.doctorDataList = doctorDataList
                     doctorItemAdapter.notifyDataSetChanged()
                     progressBar.visibility = View.GONE

@@ -13,5 +13,5 @@ abstract class UIModule {
     abstract fun bindsPostExecutionThread(uiThread: UIThread): PostExecutionThread
 
     @ContributesAndroidInjector(modules = [DoctorFragmentModule::class])
-    abstract fun contributesTaxiMainActivity(): MainActivity
+    abstract fun contributesMainActivity(): MainActivity
 }

@@ -35,13 +35,13 @@ class DoctorItemAdapter constructor(
         }
     }
 
-    public fun filerList(filterDoctorList: MutableList<Doctor>) {
+    fun filerList(filterDoctorList: MutableList<Doctor>) {
         doctorDataList = filterDoctorList
         notifyDataSetChanged()
     }
 
-    inner class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView),
-        LayoutContainer {
+    inner class ViewHolder(override val containerView: View) :
+        RecyclerView.ViewHolder(containerView), LayoutContainer {
         fun bindData(doctorData: Doctor, position: Int) {
             containerView.doctor_name.text = doctorData.name
             containerView.setOnClickListener{
@@ -49,5 +49,4 @@ class DoctorItemAdapter constructor(
             }
         }
     }
-
 }
