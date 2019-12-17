@@ -25,6 +25,6 @@ class MainActivity : DaggerAppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        tabAdapter.getItem(0).onActivityResult(requestCode, resultCode, data)
+        tabAdapter.getItem(if (requestCode == 1000) 0 else 1).onActivityResult(requestCode, resultCode, data)
     }
 }
