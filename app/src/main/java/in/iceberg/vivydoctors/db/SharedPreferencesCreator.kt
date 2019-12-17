@@ -28,7 +28,7 @@ class SharedPreferencesCreator constructor(context: Context) {
             val savedDoctorList: MutableList<Doctor> = gSonBuilder.fromJson(
                 savedData, object : TypeToken<MutableList<Doctor>>() {}.type)
             if (!isItemAddedAlready(doctor.id, savedDoctorList)) {
-                savedDoctorList.add(doctor)
+                savedDoctorList.add(0, doctor)
                 val savedDoctorString = gSonBuilder.toJson(savedDoctorList)
                 sharedPreferences.edit().putString(RECENTLY_VISITED_DOCTOR_KEY, savedDoctorString).apply()
             }
@@ -48,6 +48,21 @@ class SharedPreferencesCreator constructor(context: Context) {
                 savedData, object : TypeToken<MutableList<Doctor>>() {}.type)
         }
         return recentlyViewedDoctorList
+    }
+
+    fun getDoctorItem(id: String): Doctor? {
+        val doctorList: MutableList<Doctor>
+        val savedData = sharedPreferences.getString(RECENTLY_VISITED_DOCTOR_KEY, null)
+        if (savedData != null) {
+            doctorList = gSonBuilder.fromJson(savedData, object : TypeToken<MutableList<Doctor>>() {}.type)
+            val iterator = doctorList.listIterator()
+            for (item in iterator) {
+                if (item.id == id) {
+                    return item
+                }
+            }
+        }
+        return null
     }
 
     private fun isItemAddedAlready(id: String, doctorList: MutableList<Doctor>): Boolean {

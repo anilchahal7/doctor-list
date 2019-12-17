@@ -5,6 +5,7 @@ import `in`.iceberg.domain.response.DoctorsListResponse
 import `in`.iceberg.presentation.state.ResourceState
 import `in`.iceberg.presentation.viewmodel.GetDoctorsListViewModel
 import `in`.iceberg.vivydoctors.R
+import `in`.iceberg.vivydoctors.activity.DoctorDetailActivity
 import `in`.iceberg.vivydoctors.adapter.DoctorItemAdapter
 import `in`.iceberg.vivydoctors.db.SharedPreferencesCreator
 import `in`.iceberg.vivydoctors.dependencies.ViewModelFactory
@@ -12,6 +13,7 @@ import `in`.iceberg.vivydoctors.interfaces.DoctorsListListener
 import `in`.iceberg.vivydoctors.util.TextUtils
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -43,6 +45,8 @@ class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener {
 
     private var doctorDataList: MutableList<Doctor> = mutableListOf()
 
+    private var startDoctorDetailActivity: Int = 1000
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.doctors_list_fragment, container, false)
         initUI(view)
@@ -54,6 +58,14 @@ class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener {
         super.onAttach(context)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == startDoctorDetailActivity) {
+            doctorItemAdapter.doctorDataList = doctorDataList
+            doctorItemAdapter.notifyDataSetChanged()
+        }
+    }
+
     private fun initUI(view: View) {
         doctorItemAdapter = DoctorItemAdapter(object : DoctorsListListener {
             override fun onBottomReached() {
@@ -62,9 +74,11 @@ class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener {
                 }
                 Toast.makeText(activity, "Reached at bottom of the list", Toast.LENGTH_SHORT).show()
             }
-
-            override fun onItemClick(doctor: Doctor) {
+            override fun onItemClick(doctor: Doctor, position: Int) {
                 SharedPreferencesCreator(activity as Context).setDoctorsList(doctor)
+                doctorDataList.removeAt(position)
+                val newInstance = DoctorDetailActivity.newInstance(activity as Context, doctor.id)
+                activity?.startActivityForResult(newInstance, startDoctorDetailActivity)
             }
         })
         view.doctorRecyclerView.layoutManager = LinearLayoutManager(activity)
@@ -86,6 +100,7 @@ class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener {
                         lastKey = doctorsListResponse.lastKey
                     }
                     doctorDataList.addAll(doctorsListResponse.doctors.toMutableList())
+                    doctorDataList = doctorDataList.sortedWith(compareBy({ it.rating })).toMutableList()
                     doctorItemAdapter.doctorDataList = doctorDataList
                     doctorItemAdapter.notifyDataSetChanged()
                     progressBar.visibility = View.GONE

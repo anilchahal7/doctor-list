@@ -41,7 +41,7 @@ class RecentDoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListen
         doctorItemAdapter = DoctorItemAdapter(object : DoctorsListListener {
             override fun onBottomReached() {
             }
-            override fun onItemClick(doctor: Doctor) {
+            override fun onItemClick(doctor: Doctor, position: Int) {
             }
         })
         view.doctorRecyclerView.layoutManager = LinearLayoutManager(activity)
