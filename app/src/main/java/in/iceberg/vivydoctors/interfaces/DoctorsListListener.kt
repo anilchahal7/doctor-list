@@ -4,5 +4,5 @@ import `in`.iceberg.domain.model.Doctor
 
 interface DoctorsListListener {
     fun onBottomReached()
-    fun onItemClick(doctor: Doctor)
+    fun onItemClick(doctor: Doctor, position: Int)
 }

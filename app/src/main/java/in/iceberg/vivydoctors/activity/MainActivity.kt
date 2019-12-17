@@ -4,6 +4,7 @@ import `in`.iceberg.vivydoctors.R
 import `in`.iceberg.vivydoctors.adapter.TabAdapter
 import `in`.iceberg.vivydoctors.fragment.DoctorsListFragment
 import `in`.iceberg.vivydoctors.fragment.RecentDoctorsListFragment
+import android.content.Intent
 import android.os.Bundle
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
@@ -20,5 +21,10 @@ class MainActivity : DaggerAppCompatActivity() {
         tabAdapter.addFragment(RecentDoctorsListFragment(), resources.getString(R.string.tab_two))
         viewPager.adapter = tabAdapter
         tabLayout.setupWithViewPager(viewPager)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        tabAdapter.getItem(0).onActivityResult(requestCode, resultCode, data)
     }
 }

@@ -29,8 +29,8 @@ class DoctorItemAdapter constructor(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = doctorDataList[position]
-        holder.bindData(data)
-        if (position == doctorDataList.count() - 5){
+        holder.bindData(data, position)
+        if (position == doctorDataList.count() - 5) {
             doctorsListListener.onBottomReached()
         }
     }
@@ -42,10 +42,10 @@ class DoctorItemAdapter constructor(
 
     inner class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView),
         LayoutContainer {
-        fun bindData(doctorData: Doctor) {
+        fun bindData(doctorData: Doctor, position: Int) {
             containerView.doctor_name.text = doctorData.name
             containerView.setOnClickListener{
-                doctorsListListener.onItemClick(doctorData)
+                doctorsListListener.onItemClick(doctorData, position)
             }
         }
     }
