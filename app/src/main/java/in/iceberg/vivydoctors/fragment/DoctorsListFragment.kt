@@ -26,7 +26,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.droidnet.DroidListener
 import com.droidnet.DroidNet
-import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.doctors_list_fragment.view.*
@@ -43,7 +42,7 @@ class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener, Dr
     private lateinit var doctorsListResponse: DoctorsListResponse
     private var lastKey: String = ""
 
-    private lateinit var doctorItemAdapter: DoctorItemAdapter
+    private lateinit var doctorsListItemAdapter: DoctorItemAdapter
     private lateinit var progressBar: ProgressBar
 
     private var doctorDataList: MutableList<Doctor> = mutableListOf()
@@ -70,13 +69,23 @@ class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener, Dr
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == startDoctorDetailActivity) {
-            doctorItemAdapter.doctorDataList = doctorDataList
-            doctorItemAdapter.notifyDataSetChanged()
+            doctorsListItemAdapter.doctorDataList = doctorDataList
+            doctorsListItemAdapter.notifyDataSetChanged()
         }
     }
 
     private fun initUI(view: View) {
-        doctorItemAdapter = DoctorItemAdapter(object : DoctorsListListener {
+        doctorsList(view)
+        observeDoctorsListResponse()
+        getDoctorsListViewModel.getSearchResponse(lastKey)
+        view.searchView.setOnQueryTextListener(this)
+        if (!isNetConnected) {
+            Toast.makeText(activity, "Internet is Not Connected", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun doctorsList(view: View) {
+        doctorsListItemAdapter = DoctorItemAdapter(object : DoctorsListListener {
             override fun onBottomReached() {
                 if (TextUtils.isNotNullOrEmpty(lastKey)) {
                     getDoctorsListViewModel.getSearchResponse(lastKey)
@@ -93,16 +102,10 @@ class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener, Dr
             }
         })
         view.doctorRecyclerView.layoutManager = LinearLayoutManager(activity)
-        view.doctorRecyclerView.adapter = doctorItemAdapter
+        view.doctorRecyclerView.adapter = doctorsListItemAdapter
         progressBar = view.progressBar
         getDoctorsListViewModel =
             ViewModelProviders.of(this, viewModelFactory).get(GetDoctorsListViewModel::class.java)
-        observeDoctorsListResponse()
-        getDoctorsListViewModel.getSearchResponse(lastKey)
-        view.searchView.setOnQueryTextListener(this)
-        if (!isNetConnected) {
-            Toast.makeText(activity, "Internet is Not Connected", Toast.LENGTH_LONG).show()
-        }
     }
 
     private fun observeDoctorsListResponse() {
@@ -115,8 +118,8 @@ class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener, Dr
                     }
                     doctorDataList.addAll(doctorsListResponse.doctors.toMutableList())
                     doctorDataList = doctorDataList.sortedWith(compareBy { it.rating }).toMutableList()
-                    doctorItemAdapter.doctorDataList = doctorDataList
-                    doctorItemAdapter.notifyDataSetChanged()
+                    doctorsListItemAdapter.doctorDataList = doctorDataList
+                    doctorsListItemAdapter.notifyDataSetChanged()
                     progressBar.visibility = View.GONE
                     Toast.makeText(activity, "Doctors List Fetched", Toast.LENGTH_LONG).show()
                 }
@@ -166,6 +169,6 @@ class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener, Dr
                 filterDoctorList.add(item)
             }
         }
-        doctorItemAdapter.filerList(filterDoctorList)
+        doctorsListItemAdapter.filerList(filterDoctorList)
     }
 }
