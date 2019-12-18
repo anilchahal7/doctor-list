@@ -157,7 +157,9 @@ ext {
             supportV4         : "androidx.legacy:legacy-support-v4:${supportDesignVersion}",
             design            : "com.google.android.material:material:${supportDesignVersion}",
 
-            googleGson     : "com.google.code.gson:gson:${gsonVersion}",
+            googleGson        : "com.google.code.gson:gson:${gsonVersion}",
+            picasso           : "com.squareup.picasso:picasso:2.5.2",
+
 
             // Libraries for Dependency Injection ...
             javaxInject       : "javax.inject:javax.inject:${javaxInjectVersion}",

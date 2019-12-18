@@ -6,12 +6,42 @@
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
 
+    <TextView
+        android:id="@+id/recentlyContactedTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimary"
+        android:layout_alignParentTop="true"
+        android:text="@string/recently_contacted_doctors"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="10dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recentlyContactedRecyclerView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/recentlyContactedTextView"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/allVivyDoctotsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimary"
+        android:layout_below="@id/recentlyContactedRecyclerView"
+        android:text="@string/all_vivy_doctors"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="10dp" />
+
     <androidx.appcompat.widget.SearchView
         android:id="@+id/searchView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_below="@id/allVivyDoctotsTextView" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/doctorRecyclerView"

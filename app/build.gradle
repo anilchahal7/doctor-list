@@ -45,6 +45,7 @@ dependencies {
     implementation appDependencies.design
     implementation appDependencies.googleGson
     implementation appDependencies.droidNet
+    implementation appDependencies.picasso
 
     kapt appDependencies.daggerCompiler
     kapt appDependencies.daggerProcessor
