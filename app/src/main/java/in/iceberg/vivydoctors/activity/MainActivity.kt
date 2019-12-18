@@ -18,12 +18,12 @@ class MainActivity : DaggerAppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        SharedPreferencesCreator(this).clearStoredData()
         tabAdapter = TabAdapter(supportFragmentManager)
         tabAdapter.addFragment(DoctorsListFragment(), resources.getString(R.string.tab_one))
         tabAdapter.addFragment(RecentDoctorsListFragment(), resources.getString(R.string.tab_two))
         viewPager.adapter = tabAdapter
         tabLayout.setupWithViewPager(viewPager)
-        SharedPreferencesCreator(this).clearStoredData()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
