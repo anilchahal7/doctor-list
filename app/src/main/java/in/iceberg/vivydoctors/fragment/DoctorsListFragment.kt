@@ -7,6 +7,7 @@ import `in`.iceberg.presentation.viewmodel.GetDoctorsListViewModel
 import `in`.iceberg.vivydoctors.R
 import `in`.iceberg.vivydoctors.activity.DoctorDetailActivity
 import `in`.iceberg.vivydoctors.adapter.DoctorItemAdapter
+import `in`.iceberg.vivydoctors.adapter.RecentlyContactedAdapter
 import `in`.iceberg.vivydoctors.db.SharedPreferencesCreator
 import `in`.iceberg.vivydoctors.dependencies.ViewModelFactory
 import `in`.iceberg.vivydoctors.interfaces.DoctorsListListener
@@ -24,6 +25,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.droidnet.DroidListener
 import com.droidnet.DroidNet
 import dagger.android.support.AndroidSupportInjection
@@ -43,9 +45,11 @@ class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener, Dr
     private var lastKey: String = ""
 
     private lateinit var doctorsListItemAdapter: DoctorItemAdapter
+    private lateinit var recentlyContactedAdapter: RecentlyContactedAdapter
     private lateinit var progressBar: ProgressBar
 
     private var doctorDataList: MutableList<Doctor> = mutableListOf()
+    private var recentlyContactedList: MutableList<Doctor> = mutableListOf()
 
     private var startDoctorDetailActivity: Int = 1000
     private var showMessageOnlyOnce: Boolean = true
@@ -71,10 +75,15 @@ class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener, Dr
         if (requestCode == startDoctorDetailActivity) {
             doctorsListItemAdapter.doctorDataList = doctorDataList
             doctorsListItemAdapter.notifyDataSetChanged()
+
+            recentlyContactedList = SharedPreferencesCreator(activity as Context).getDoctorsList()
+            recentlyContactedAdapter.doctorDataList = recentlyContactedList
+            recentlyContactedAdapter.notifyDataSetChanged()
         }
     }
 
     private fun initUI(view: View) {
+        recentlyContactedDoctors(view)
         doctorsList(view)
         observeDoctorsListResponse()
         getDoctorsListViewModel.getSearchResponse(lastKey)
@@ -100,12 +109,23 @@ class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener, Dr
                 val newInstance = DoctorDetailActivity.newInstance(activity as Context, doctor.id)
                 activity?.startActivityForResult(newInstance, startDoctorDetailActivity)
             }
-        })
+        }, activity as Context)
         view.doctorRecyclerView.layoutManager = LinearLayoutManager(activity)
         view.doctorRecyclerView.adapter = doctorsListItemAdapter
         progressBar = view.progressBar
         getDoctorsListViewModel =
             ViewModelProviders.of(this, viewModelFactory).get(GetDoctorsListViewModel::class.java)
+
+    }
+
+    private fun recentlyContactedDoctors(view: View) {
+        recentlyContactedAdapter = RecentlyContactedAdapter()
+        view.recentlyContactedRecyclerView.layoutManager = LinearLayoutManager(activity,
+            RecyclerView.HORIZONTAL, false)
+        view.recentlyContactedRecyclerView.adapter = recentlyContactedAdapter
+        recentlyContactedList = SharedPreferencesCreator(activity as Context).getDoctorsList()
+        recentlyContactedAdapter.doctorDataList = recentlyContactedList
+        recentlyContactedAdapter.notifyDataSetChanged()
     }
 
     private fun observeDoctorsListResponse() {

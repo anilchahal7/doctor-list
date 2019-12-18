@@ -58,10 +58,12 @@ class RecentDoctorsListFragment : DaggerFragment() {
                     newInstance(activity as Context, doctor.id)
                 activity?.startActivityForResult(newInstance, startDoctorDetailActivity)
             }
-        })
+        }, activity as Context)
         view.doctorRecyclerView.layoutManager = LinearLayoutManager(activity)
         view.doctorRecyclerView.adapter = doctorItemAdapter
         view.searchView.visibility = View.GONE
+        view.recentlyContactedTextView.visibility = View.GONE
+        view.allVivyDoctotsTextView.visibility = View.GONE
         progressBar = view.progressBar
     }
 

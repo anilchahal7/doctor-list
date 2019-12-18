@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/selected_course_layout_card_view"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="wrap_content"
     android:layout_marginStart="10dp"
     android:layout_marginLeft="10dp"
     android:layout_marginEnd="10dp"
@@ -27,91 +27,66 @@
             android:layout_height="5dp"
             android:background="@color/colorPrimary" />
 
+        <ImageView
+            android:id="@+id/doctorPhotoId"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="5dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_doctor"
+            android:contentDescription="@string/app_name" />
+
         <TextView
-            android:id="@+id/doctor_name"
+            android:id="@+id/doctorName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/colorPrimary"
             android:textSize="16sp"
             android:textStyle="bold"
+            android:layout_toEndOf="@id/doctorPhotoId"
             android:layout_marginTop="25dp"
-            android:layout_marginStart="10dp" />
+            android:layout_marginStart="10dp"
+            tools:ignore="RelativeOverlap" />
 
         <TextView
-            android:id="@+id/selected_subject"
+            android:id="@+id/doctorAddress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/colorPrimary"
-            android:layout_centerHorizontal="true"
-            android:layout_marginEnd="10dp"
-            tools:ignore="RelativeOverlap"
             android:textStyle="bold"
-            android:layout_marginTop="25dp"
-            android:layout_alignParentEnd="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/doctorName"
+            android:layout_toEndOf="@id/doctorPhotoId"
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/total_student"
+            android:id="@+id/doctorContactNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/colorPrimary"
-            android:textSize="16sp"
-            android:layout_marginTop="4dp"
+            android:textStyle="bold"
             android:layout_marginStart="10dp"
-            android:layout_below="@id/selected_subject"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="15dp"
+            android:layout_below="@id/doctorAddress"
             android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
+            android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/present_student_count"
+            android:id="@+id/doctorRating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/colorPrimary"
-            android:textSize="16sp"
-            android:layout_marginTop="4dp"
-            android:layout_below="@id/selected_subject"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
-
-        <TextView
-            android:id="@+id/absent_student_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
-            android:textSize="16sp"
-            android:layout_marginTop="4dp"
+            android:textStyle="bold"
             android:layout_marginEnd="10dp"
-            tools:ignore="RelativeOverlap"
-            android:layout_below="@id/selected_subject"
-            android:layout_centerVertical="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="15dp"
+            android:layout_below="@id/doctorAddress"
             android:layout_alignParentEnd="true"
-            android:layout_centerHorizontal="true"/>
-
-        <TextView
-            android:id="@+id/selected_division"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
-            android:textSize="14sp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginStart="10dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_centerHorizontal="true" />
-
-        <TextView
-            android:id="@+id/selected_lecture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
-            android:textSize="14sp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginEnd="10dp"
-            tools:ignore="RelativeOverlap"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_centerHorizontal="true" />
+            android:textSize="16sp" />
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
