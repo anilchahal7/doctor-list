@@ -20,6 +20,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
@@ -47,6 +48,7 @@ class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener, Dr
     private lateinit var doctorsListItemAdapter: DoctorItemAdapter
     private lateinit var recentlyContactedAdapter: RecentlyContactedAdapter
     private lateinit var progressBar: ProgressBar
+    private lateinit var recentlyContactedTextView: TextView
 
     private var doctorDataList: MutableList<Doctor> = mutableListOf()
     private var recentlyContactedList: MutableList<Doctor> = mutableListOf()
@@ -73,12 +75,8 @@ class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener, Dr
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == startDoctorDetailActivity) {
-            doctorsListItemAdapter.doctorDataList = doctorDataList
-            doctorsListItemAdapter.notifyDataSetChanged()
-
-            recentlyContactedList = SharedPreferencesCreator(activity as Context).getDoctorsList()
-            recentlyContactedAdapter.doctorDataList = recentlyContactedList
-            recentlyContactedAdapter.notifyDataSetChanged()
+            refreshDoctorsList()
+            refreshRecentlyContactedList()
         }
     }
 
@@ -115,7 +113,6 @@ class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener, Dr
         progressBar = view.progressBar
         getDoctorsListViewModel =
             ViewModelProviders.of(this, viewModelFactory).get(GetDoctorsListViewModel::class.java)
-
     }
 
     private fun recentlyContactedDoctors(view: View) {
@@ -123,9 +120,9 @@ class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener, Dr
         view.recentlyContactedRecyclerView.layoutManager = LinearLayoutManager(activity,
             RecyclerView.HORIZONTAL, false)
         view.recentlyContactedRecyclerView.adapter = recentlyContactedAdapter
-        recentlyContactedList = SharedPreferencesCreator(activity as Context).getDoctorsList()
-        recentlyContactedAdapter.doctorDataList = recentlyContactedList
-        recentlyContactedAdapter.notifyDataSetChanged()
+        recentlyContactedTextView = view.recentlyContactedTextView
+        recentlyContactedTextView.visibility = View.GONE
+        refreshRecentlyContactedList()
     }
 
     private fun observeDoctorsListResponse() {
@@ -138,8 +135,7 @@ class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener, Dr
                     }
                     doctorDataList.addAll(doctorsListResponse.doctors.toMutableList())
                     doctorDataList = doctorDataList.sortedWith(compareBy { it.rating }).toMutableList()
-                    doctorsListItemAdapter.doctorDataList = doctorDataList
-                    doctorsListItemAdapter.notifyDataSetChanged()
+                    refreshDoctorsList()
                     progressBar.visibility = View.GONE
                     Toast.makeText(activity, "Doctors List Fetched", Toast.LENGTH_LONG).show()
                 }
@@ -164,6 +160,25 @@ class DoctorsListFragment : DaggerFragment(), SearchView.OnQueryTextListener, Dr
         if (isVisibleToUser && !isNetConnected) {
             Toast.makeText(activity, "Internet is Not Connected", Toast.LENGTH_LONG).show()
         }
+        if (activity != null && isVisibleToUser) {
+            refreshRecentlyContactedList()
+        }
+    }
+
+    private fun refreshRecentlyContactedList() {
+        recentlyContactedList = SharedPreferencesCreator(activity as Context).getRecentlyContactedThreeDoctorsList()
+        if (recentlyContactedList.size > 0) {
+            recentlyContactedTextView.visibility = View.VISIBLE
+        } else {
+            recentlyContactedTextView.visibility = View.GONE
+        }
+        recentlyContactedAdapter.doctorDataList = recentlyContactedList
+        recentlyContactedAdapter.notifyDataSetChanged()
+    }
+
+    private fun refreshDoctorsList() {
+        doctorsListItemAdapter.doctorDataList = doctorDataList
+        doctorsListItemAdapter.notifyDataSetChanged()
     }
 
     override fun onInternetConnectivityChanged(isConnected: Boolean) {

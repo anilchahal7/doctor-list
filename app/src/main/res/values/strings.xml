@@ -3,6 +3,13 @@
     <string name="doctor_name">Doctor Name</string>
     <string name="tab_one">Vivy Doctors</string>
     <string name="tab_two">Recent Doctors</string>
-    <string name="recently_contacted_doctors">Recently Contacted Doctors</string>
-    <string name="all_vivy_doctors">All Vivy Doctors</string>
+    <string name="recent_doctors">Recent Doctors</string>
+    <string name="vivy_doctors">Vivy Doctors</string>
+
+    <string name="name_text">Name - %1$s</string>
+    <string name="address_text">Address - %1$s</string>
+    <string name="phone_text">Phone %1$s</string>
+    <string name="rating_text">Rating %1$s</string>
+    <string name="review_text">Review Count %1$s</string>
+    <string name="site_text">Site - %1$s</string>
 </resources>

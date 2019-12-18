@@ -48,15 +48,7 @@ class SharedPreferencesCreator constructor(context: Context) {
             val savedDoctorString = gSonBuilder.toJson(savedDoctorList)
             sharedPreferences.edit().putString(RECENTLY_VISITED_DOCTOR_KEY, savedDoctorString).apply()
         } else {
-            val filteredList: MutableList<Doctor> = mutableListOf()
-            for (i in savedDoctorList.indices) {
-                if (i < 3) {
-                    filteredList.add(savedDoctorList[i])
-                } else {
-                    break
-                }
-            }
-            val savedDoctorString = gSonBuilder.toJson(filteredList)
+            val savedDoctorString = gSonBuilder.toJson(savedDoctorList)
             sharedPreferences.edit().putString(RECENTLY_VISITED_DOCTOR_KEY, savedDoctorString).apply()
         }
     }
@@ -67,6 +59,25 @@ class SharedPreferencesCreator constructor(context: Context) {
         if (savedData != null) {
             recentlyViewedDoctorList = gSonBuilder.fromJson(
                 savedData, object : TypeToken<MutableList<Doctor>>() {}.type)
+        }
+        return recentlyViewedDoctorList
+    }
+
+    fun getRecentlyContactedThreeDoctorsList(): MutableList<Doctor> {
+        var recentlyViewedDoctorList: MutableList<Doctor> = mutableListOf()
+        val savedData = sharedPreferences.getString(RECENTLY_VISITED_DOCTOR_KEY, null)
+        if (savedData != null) {
+            recentlyViewedDoctorList = gSonBuilder.fromJson(
+                savedData, object : TypeToken<MutableList<Doctor>>() {}.type)
+            val filteredList: MutableList<Doctor> = mutableListOf()
+            for (i in recentlyViewedDoctorList.indices) {
+                if (i < 3) {
+                    filteredList.add(recentlyViewedDoctorList[i])
+                } else {
+                    break
+                }
+            }
+            return filteredList
         }
         return recentlyViewedDoctorList
     }
@@ -95,5 +106,9 @@ class SharedPreferencesCreator constructor(context: Context) {
             }
         }
         return position
+    }
+
+    fun clearStoredData() {
+        sharedPreferences.edit().putString(RECENTLY_VISITED_DOCTOR_KEY, null).apply()
     }
 }

@@ -2,7 +2,6 @@ package `in`.iceberg.vivydoctors.adapter
 
 import `in`.iceberg.domain.model.Doctor
 import `in`.iceberg.vivydoctors.R
-import `in`.iceberg.vivydoctors.interfaces.DoctorsListListener
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,12 +25,12 @@ class RecentlyContactedAdapter : RecyclerView.Adapter<RecentlyContactedAdapter.V
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = doctorDataList[position]
-        holder.bindData(data, position)
+        holder.bindData(data)
     }
 
     inner class ViewHolder(override val containerView: View) :
         RecyclerView.ViewHolder(containerView), LayoutContainer {
-        fun bindData(doctorData: Doctor, position: Int) {
+        fun bindData(doctorData: Doctor) {
             containerView.doctorName.text = doctorData.name
         }
     }

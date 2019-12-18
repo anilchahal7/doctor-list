@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.doctor_item_layout.view.*
-import java.math.RoundingMode
 
 class DoctorItemAdapter constructor(
         private val doctorsListListener: DoctorsListListener,
@@ -49,25 +48,16 @@ class DoctorItemAdapter constructor(
         RecyclerView.ViewHolder(containerView), LayoutContainer {
         fun bindData(doctorData: Doctor, position: Int) {
             if (TextUtils.isNotNullOrEmpty(doctorData.name)) {
-                val name = "Name - "
-                containerView.doctorName.text = """$name${doctorData.name}"""
+                containerView.doctorName.text = context.resources.getString(R.string.name_text,
+                    doctorData.name)
             }
             if (TextUtils.isNotNullOrEmpty(doctorData.photoId)) {
-                Picasso.with(context).load(doctorData.photoId).into(containerView.doctorPhotoId)
+                Picasso.with(context).load(doctorData.photoId).placeholder(R.drawable.ic_doctor).
+                    into(containerView.doctorPhotoId)
             }
             if (TextUtils.isNotNullOrEmpty(doctorData.address)) {
-                val address = "Address - "
-                containerView.doctorAddress.text = """$address${doctorData.address}"""
-            }
-            if (TextUtils.isNotNullOrEmpty(doctorData.phoneNumber)) {
-                val phoneNumber = "Phone "
-                containerView.doctorContactNumber.text = """$phoneNumber${doctorData.phoneNumber}"""
-            }
-            if (doctorData.rating > 0) {
-                val number = doctorData.rating
-                val rounded = number.toBigDecimal().setScale(2, RoundingMode.UP).toDouble()
-                val ratingNumber = "Rating "
-                containerView.doctorRating.text = """$ratingNumber${rounded}"""
+                containerView.doctorAddress.text = context.resources.getString(R.string.address_text,
+                    doctorData.address)
             }
             containerView.setOnClickListener{
                 doctorsListListener.onItemClick(doctorData, position)
