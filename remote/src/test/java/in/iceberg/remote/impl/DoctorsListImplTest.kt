@@ -36,7 +36,12 @@ class DoctorsListImplTest {
     fun getDoctorsListResponseCompletesTest() {
         val doctorsListResponse = DataFactory.getRandomDoctorListResponse()
         val lastKey = DataFactory.getRandomString()
-        stubGetDoctorsListResponse(Single.just(doctorsListResponse), lastKey)
+        val pathUrl: String = if (lastKey.isEmpty()) {
+            "/interviews/challenges/android/doctors.json"
+        } else {
+            "/interviews/challenges/android/doctors-$lastKey.json"
+        }
+        stubGetDoctorsListResponse(Single.just(doctorsListResponse), pathUrl)
         val testObserver = doctorsListRemoteImpl.getDoctorsList(lastKey).test()
         testObserver.assertComplete()
     }
@@ -45,16 +50,26 @@ class DoctorsListImplTest {
     fun getDoctorsListResponseApiCalled() {
         val doctorsListResponse = DataFactory.getRandomDoctorListResponse()
         val lastKey = DataFactory.getRandomString()
-        stubGetDoctorsListResponse(Single.just(doctorsListResponse), lastKey)
+        val pathUrl: String = if (lastKey.isEmpty()) {
+            "/interviews/challenges/android/doctors.json"
+        } else {
+            "/interviews/challenges/android/doctors-$lastKey.json"
+        }
+        stubGetDoctorsListResponse(Single.just(doctorsListResponse), pathUrl)
         doctorsListRemoteImpl.getDoctorsList(lastKey).test()
-        verify(doctorsListService).getListOfDoctors(lastKey)
+        verify(doctorsListService).getListOfDoctors(pathUrl)
     }
 
     @Test
     fun getDoctorsDataReturnsDataTest() {
         val doctorsListResponse = DataFactory.getRandomDoctorListResponse()
         val lastKey = DataFactory.getRandomString()
-        stubGetDoctorsListResponse(Single.just(doctorsListResponse), lastKey)
+        val pathUrl: String = if (lastKey.isEmpty()) {
+            "/interviews/challenges/android/doctors.json"
+        } else {
+            "/interviews/challenges/android/doctors-$lastKey.json"
+        }
+        stubGetDoctorsListResponse(Single.just(doctorsListResponse), pathUrl)
         val testObserver = doctorsListRemoteImpl.getDoctorsList(lastKey).test()
         testObserver.assertValue(doctorsListResponse)
     }
