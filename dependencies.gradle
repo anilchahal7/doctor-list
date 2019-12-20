@@ -171,4 +171,32 @@ ext {
             // Library for Checking Internet Connection ...
             droidNet          : "com.job:droidnet:${droidNetVersion}"
     ]
+
+    cacheDependencies = [
+            gson                : "com.google.code.gson:gson:${gsonVersion}",
+            rxKotlin          : "io.reactivex.rxjava2:rxkotlin:${rxKotlinVersion}",
+            kotlin              : "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version",
+            javaxAnnotation     : "javax.annotation:javax.annotation-api:${javaxAnnotationVersion}",
+            javaxInject         : "javax.inject:javax.inject:${javaxInjectVersion}",
+            androidAnnotations  : "com.android.support:support-annotations:${supportLibraryVersion}",
+            roomRuntime         : "android.arch.persistence.room:runtime:$roomVersion",
+            roomCompiler        : "android.arch.persistence.room:compiler:$roomVersion",
+            roomRx              : "android.arch.persistence.room:rxjava2:$roomVersion",
+            daggerCompiler      : "com.google.dagger:dagger-compiler:$daggerVersion",
+            dagger              : "com.google.dagger:dagger:$daggerVersion"
+    ]
+
+    cacheTestDependencies = [
+            jUnit               : "junit:junit:${jUnitVersion}",
+            assertJ             : "org.assertj:assertj-core:${assertJVersion}",
+            mockitoKotlin       : "com.nhaarman:mockito-kotlin-kt1.1:${mockitoKotlinVersion}",
+            kotlinUnit          : "org.jetbrains.kotlin:kotlin-test-junit:${kotlin_version}",
+            androidRunner       : "com.android.support.test:runner:${androidTestRunner}",
+            androidTestRules    : "com.android.support.test:rules:${androidTestRunner}",
+            roomTesting         : "android.arch.persistence.room:testing:$roomVersion",
+            archTesting         : "android.arch.core:core-testing:$archComponents",
+            robolectric         : "org.robolectric:robolectric:${robolectricVersion}",
+            mockitoCore         : "org.mockito:mockito-core:${mockitoVersion}",
+            mockitoInline       : "org.mockito:mockito-inline:${mockitoVersion}"
+    ]
 }
